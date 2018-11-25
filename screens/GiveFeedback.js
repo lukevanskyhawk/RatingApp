@@ -2,13 +2,21 @@ import React from 'react';
 import {
   Image,
   Platform,
+  Keyboard,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import StarRating from 'react-native-star-rating';
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+)
 
 export default class GiveFeedbackScreen extends React.Component {
   static navigationOptions = {
@@ -30,32 +38,40 @@ export default class GiveFeedbackScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Email of person you are rating</Text>
-        <TextInput style={styles.emailInput} keyboardType="email-address" placeholder="Email" />
+      <DismissKeyboard>
+        <View style={styles.container}>
+          <Text>Email of person you are rating</Text>
+          <TextInput
+            style={styles.emailInput}
+            keyboardType="email-address"
+            placeholder="Email"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
 
-        <Text>Rating</Text>
-        <StarRating
-          containerStyle={styles.ratingInput}
-          disabled={false}
-          maxStars={5}
-          fullStarColor={'#fba634'}
-          rating={this.state.starCount}
-          selectedStar={(rating) => this.onStarRatingPress(rating)}
-        />
+          <Text>Rating</Text>
+          <StarRating
+            containerStyle={styles.ratingInput}
+            disabled={false}
+            maxStars={5}
+            fullStarColor={'#fba634'}
+            rating={this.state.starCount}
+            selectedStar={(rating) => this.onStarRatingPress(rating)}
+          />
 
-        <Text>Comments</Text>
-        <TextInput style={styles.commentInput} placeholder="Comments" multiline={true} />
+          <Text>Comments</Text>
+          <TextInput style={styles.commentInput} placeholder="Comments" multiline={true} />
 
-        <TouchableOpacity
-          style={styles.submitButton}
-        // onPress={
-        //   // () => this.login(this.state.email, this.state.password)
-        // }
-        >
-          <Text style={styles.submitButtonText}> Submit </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.submitButton}
+          // onPress={
+          //   // () => this.login(this.state.email, this.state.password)
+          // }
+          >
+            <Text style={styles.submitButtonText}> Submit </Text>
+          </TouchableOpacity>
+        </View>
+      </DismissKeyboard>
     );
   }
 }

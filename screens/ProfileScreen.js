@@ -33,12 +33,6 @@ export default class ProfileScreen extends React.Component {
             />
           </View>
 
-          {/* <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={(text) => this.setState({ text })}
-
-          /> */}
-
           <View style={styles.getStartedContainer}>
 
 
@@ -48,20 +42,33 @@ export default class ProfileScreen extends React.Component {
 
           </View>
 
-          {/* This is knowing how to do touch stuff <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View> */}
+          <View style={styles.container}>
+            <Text>Your name</Text>
+            <TextInput
+              style={styles.emailInput}
+              placeholder="Name"
+              autoCorrect={false}
+            />
+            <Text>Your email</Text>
+            <TextInput
+              style={styles.emailInput}
+              keyboardType="email-address"
+              placeholder="Your Email"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <Text>Manager's email</Text>
+            <TextInput
+              style={styles.emailInput}
+              keyboardType="email-address"
+              placeholder="Manager's Email"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
+
         </ScrollView>
 
-        {/* <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View> */}
       </View>
     );
   }
@@ -103,8 +110,21 @@ export default class ProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
     backgroundColor: '#fff',
   },
+  emailInput: {
+    borderWidth: 1,
+    height: 40,
+    margin: 15,
+    padding: 3,
+    borderRadius: 3
+  },
+
+
+
   developmentModeText: {
     marginBottom: 20,
     color: 'rgba(0,0,0,0.4)',

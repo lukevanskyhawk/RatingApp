@@ -1,62 +1,67 @@
-import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
-
-export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-  };
-
-  render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
-      return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
-      );
-    }
-  }
-
-  _loadResourcesAsync = async () => {
-    return Promise.all([
-      Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
-      ]),
-      Font.loadAsync({
-        // This is the font that we are using for our tab bar
-        ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-      }),
-    ]);
-  };
-
-  _handleLoadingError = error => {
-    // In this case, you might want to report the error to your error
-    // reporting service, for example Sentry
-    console.warn(error);
-  };
-
-  _handleFinishLoading = () => {
-    this.setState({ isLoadingComplete: true });
-  };
-}
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import firebase from 'firebase';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import Login from './Login';
+import Loader from './Loader';
+import reducers from '../reducers/PeopleReducer';
+import AppHome from '../components/AppHome';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    }
 });
+
+const store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
+
+export default class App extends Component {
+    state = {
+        loggedIn: null
+    };
+
+    componentWillMount() {
+        firebase.initializeApp({
+            apiKey: "AIzaSyCDKgeyJba0oV35IkDtO_x1EO_Y74RBi_M",
+            authDomain: "fidello-feedback.firebaseapp.com",
+            databaseURL: "https://fidello-feedback.firebaseio.com",
+            projectId: "fidello-feedback",
+            storageBucket: "fidello-feedback.appspot.com",
+            messagingSenderId: "74834410827"
+        });
+
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.setState({ loggedIn: true });
+            } else {
+                this.setState({ loggedIn: false });
+            }
+        })
+    }
+
+    renderInitialView() {
+        switch (this.state.loggedIn) {
+            case true:
+                return <AppHome />
+            case false:
+                return <Login />
+            default:
+                return <Loader size="large" />
+        }
+    }
+
+    render() {
+        return (
+            <Provider store={store}>
+                <View style={styles.container}>
+                    {this.renderInitialView()}
+                </View>
+            </Provider>
+        );
+    }
+}
