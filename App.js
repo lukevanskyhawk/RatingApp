@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import firebase from 'firebase';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import Login from './Login';
-import Loader from './Loader';
-import reducers from '../reducers/PeopleReducer';
-import AppHome from '../components/AppHome';
+import AppHome from './components/AppHome';
+import Loader from './screens/Loader';
+import Login from './screens/Login';
 
 const styles = StyleSheet.create({
     container: {
@@ -17,13 +14,15 @@ const styles = StyleSheet.create({
     }
 });
 
-const store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-
-
 export default class App extends Component {
+
     state = {
         loggedIn: null
-    };
+    }
+
+    constructor(props) {
+        super(props);
+    }
 
     componentWillMount() {
         firebase.initializeApp({
@@ -57,11 +56,9 @@ export default class App extends Component {
 
     render() {
         return (
-            <Provider store={store}>
-                <View style={styles.container}>
-                    {this.renderInitialView()}
-                </View>
-            </Provider>
+            <View style={styles.container}>
+                {this.renderInitialView()}
+            </View>
         );
     }
 }
